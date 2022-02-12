@@ -1,4 +1,7 @@
 import tkinter as tk
+import random
+import threading
+import time
 
 # define fonts and colours
 background = "#004E98"
@@ -7,119 +10,144 @@ correct_place_colour = "#89ce94"
 incorrect_place_colour = "#F1D302"
 incorrect_colour = "#c1292e"
 
+# word list (to guess)
+word_list = ["alert", "allow", "arena", "array", "audio", "baker", "brown", "cable", "chest", "chief",
+             "grand", "hotel", "house", "joint", "human", "local", "loose", "lunch", "robin", "sleep", "smart"]
+
+
+# choose a word from the list
+chosen_word = random.choice(word_list)
+
+# set up an int that will keep track of the amount of guesses a player has made
+num_guesses = 0
+
 
 def validate(*args):
     """Validate the entry box to see if it is longer than 1 character, or not an alpha character;
     if it is either, reset the entry to contain 1 character (or no character if invalid)."""
     if len(let_var.get()) > 1:
         let_var.set(let_var.get()[:1])
-    if not let_var.get().isalpha():
+    if not let_var.get().isalpha() or let_var.get().isupper():
         let_var.set("")
 
     if len(let_var_1.get()) > 1:
         let_var_1.set(let_var_1.get()[:1])
-    if not let_var_1.get().isalpha():
+    if not let_var_1.get().isalpha() or let_var_1.get().isupper():
         let_var_1.set("")
 
     if len(let_var_2.get()) > 1:
         let_var_2.set(let_var_2.get()[:1])
-    if not let_var_2.get().isalpha():
+    if not let_var_2.get().isalpha() or let_var_2.get().isupper():
         let_var_2.set("")
 
     if len(let_var_3.get()) > 1:
         let_var_3.set(let_var_3.get()[:1])
-    if not let_var_3.get().isalpha():
+    if not let_var_3.get().isalpha() or let_var_3.get().isupper():
         let_var_3.set("")
 
     if len(let_var_4.get()) > 1:
         let_var_4.set(let_var_4.get()[:1])
-    if not let_var_4.get().isalpha():
+    if not let_var_4.get().isalpha() or let_var_4.get().isupper():
         let_var_4.set("")
 
-    if len(let_var_5.get()) > 1:
-        let_var_5.set(let_var_5.get()[:1])
-    if not let_var.get().isalpha():
-        let_var_5.set("")
 
-    if len(let_var_6.get()) > 1:
-        let_var_6.set(let_var_6.get()[:1])
-    if not let_var_1.get().isalpha():
-        let_var_6.set("")
+def check_guess():
+    """Check to see if the letters written in the entries match the selected word, changing the entry colours
+    accordingly."""
 
-    if len(let_var_7.get()) > 1:
-        let_var_7.set(let_var_7.get()[:1])
-    if not let_var_2.get().isalpha():
-        let_var_7.set("")
+    global num_guesses
 
-    if len(let_var_8.get()) > 1:
-        let_var_8.set(let_var_8.get()[:1])
-    if not let_var_8.get().isalpha():
-        let_var_8.set("")
+    # increment num_guesses each time a guess is made
+    num_guesses += 1
+    num_guesses_label.config(text="Number of guesses: " + str(num_guesses))
 
-    if len(let_var_9.get()) > 1:
-        let_var_9.set(let_var_9.get()[:1])
-    if not let_var_9.get().isalpha():
-        let_var_9.set("")
+    user_word = entry_1.get() + entry_2.get() + entry_3.get() + entry_4.get() + entry_5.get()
 
-    if len(let_var_10.get()) > 1:
-        let_var_10.set(let_var_10.get()[:1])
-    if not let_var_10.get().isalpha():
-        let_var_10.set("")
+    if user_word == chosen_word:
+        entry_1.config(bg=correct_place_colour)
+        entry_2.config(bg=correct_place_colour)
+        entry_3.config(bg=correct_place_colour)
+        entry_4.config(bg=correct_place_colour)
+        entry_5.config(bg=correct_place_colour)
 
-    if len(let_var_11.get()) > 1:
-        let_var_11.set(let_var_11.get()[:1])
-    if not let_var_11.get().isalpha():
-        let_var_11.set("")
+        confirm_button.config(text="You won!", state=tk.DISABLED)
+        reset_game_thread()
 
-    if len(let_var_12.get()) > 1:
-        let_var_12.set(let_var_12.get()[:1])
-    if not let_var.get().isalpha():
-        let_var_12.set("")
+    else:
+        if entry_1.get() == chosen_word[0]:
+            entry_1.config(bg=correct_place_colour)
+        else:
+            if entry_1.get() in chosen_word and entry_1.get() != "":
+                entry_1.config(bg=incorrect_place_colour)
+            else:
+                entry_1.config(bg=incorrect_colour)
 
-    if len(let_var_13.get()) > 1:
-        let_var_13.set(let_var_13.get()[:1])
-    if not let_var_13.get().isalpha():
-        let_var_13.set("")
+        if entry_2.get() == chosen_word[1]:
+            entry_2.config(bg=correct_place_colour)
+        else:
+            if entry_2.get() in chosen_word and entry_2.get() != "":
+                entry_2.config(bg=incorrect_place_colour)
+            else:
+                entry_2.config(bg=incorrect_colour)
 
-    if len(let_var_14.get()) > 1:
-        let_var_14.set(let_var_14.get()[:1])
-    if not let_var_14.get().isalpha():
-        let_var_14.set("")
+        if entry_3.get() == chosen_word[2]:
+            entry_3.config(bg=correct_place_colour)
+        else:
+            if entry_3.get() in chosen_word and entry_3.get() != "":
+                entry_3.config(bg=incorrect_place_colour)
+            else:
+                entry_3.config(bg=incorrect_colour)
 
-    if len(let_var_15.get()) > 1:
-        let_var_15.set(let_var_15.get()[:1])
-    if not let_var_15.get().isalpha():
-        let_var_15.set("")
+        if entry_4.get() == chosen_word[3]:
+            entry_4.config(bg=correct_place_colour)
+        else:
+            if entry_4.get() in chosen_word and entry_4.get() != "":
+                entry_4.config(bg=incorrect_place_colour)
+            else:
+                entry_4.config(bg=incorrect_colour)
 
-    if len(let_var_16.get()) > 1:
-        let_var_16.set(let_var_16.get()[:1])
-    if not let_var_16.get().isalpha():
-        let_var_16.set("")
+        if entry_5.get() == chosen_word[4]:
+            entry_5.config(bg=correct_place_colour)
+        else:
+            if entry_5.get() in chosen_word and entry_5.get() != "":
+                entry_5.config(bg=incorrect_place_colour)
+            else:
+                entry_5.config(bg=incorrect_colour)
 
-    if len(let_var_17.get()) > 1:
-        let_var_17.set(let_var_17.get()[:1])
-    if not let_var_17.get().isalpha():
-        let_var_17.set("")
 
-    if len(let_var_18.get()) > 1:
-        let_var_18.set(let_var_18.get()[:1])
-    if not let_var_18.get().isalpha():
-        let_var_18.set("")
+def reset_game_thread():
+    """Thread the reset_game function to allow for a delay between resets."""
+    thread = threading.Thread(target=reset_game)
+    thread.start()
 
-    if len(let_var_19.get()) > 1:
-        let_var_19.set(let_var_19.get()[:1])
-    if not let_var_19.get().isalpha():
-        let_var_19.set("")
 
-    if len(let_var_20.get()) > 1:
-        let_var_20.set(let_var_20.get()[:1])
-    if not let_var_20.get().isalpha():
-        let_var_20.set("")
+def reset_game():
+    """Reset all entries and variables and choose a new word to be guessed."""
+    global num_guesses
+    global chosen_word
 
-    if len(let_var_21.get()) > 1:
-        let_var_21.set(let_var_21.get()[:1])
-    if not let_var_21.get().isalpha():
-        let_var_21.set("")
+    time.sleep(3)
+
+    let_var.set("")
+    let_var_1.set("")
+    let_var_2.set("")
+    let_var_3.set("")
+    let_var_4.set("")
+
+    entry_1.config(bg="white")
+    entry_2.config(bg="white")
+    entry_3.config(bg="white")
+    entry_4.config(bg="white")
+    entry_5.config(bg="white")
+
+
+    num_guesses = 0
+    num_guesses_label.config(text="Number of guesses: ")
+
+    chosen_word = random.choice(word_list)
+
+    confirm_button.config(text="Confirm Guess", state=tk.NORMAL)
+
 
 
 # define main window
@@ -136,6 +164,13 @@ tk.Label(root, text="WORDLE", font=("Century", 50), bg=background, fg=correct_pl
 game_frame = tk.Frame(root, bg=foreground)
 game_frame.pack(pady=20)
 
+# create confirm button
+confirm_button = tk.Button(root, text="Confirm Guess", font=("Century", 25), bg=foreground, fg=correct_place_colour, command=check_guess)
+confirm_button.pack(side=tk.BOTTOM, pady=5)
+
+num_guesses_label = tk.Label(root, text="Number of guesses: ", font=("Century", 25), bg=foreground, fg=correct_place_colour)
+num_guesses_label.pack(side=tk.BOTTOM)
+
 # create a StringVar for each entry to be validated
 let_var = tk.StringVar()
 let_var.trace('w', validate)
@@ -148,50 +183,6 @@ let_var_3.trace('w', validate)
 let_var_4 = tk.StringVar()
 let_var_4.trace('w', validate)
 
-let_var_5 = tk.StringVar()
-let_var_5.trace('w', validate)
-let_var_6 = tk.StringVar()
-let_var_6.trace('w', validate)
-let_var_7 = tk.StringVar()
-let_var_7.trace('w', validate)
-let_var_8 = tk.StringVar()
-let_var_8.trace('w', validate)
-let_var_9 = tk.StringVar()
-let_var_9.trace('w', validate)
-
-let_var_10 = tk.StringVar()
-let_var_10.trace('w', validate)
-let_var_11 = tk.StringVar()
-let_var_11.trace('w', validate)
-let_var_12 = tk.StringVar()
-let_var_12.trace('w', validate)
-let_var_13 = tk.StringVar()
-let_var_13.trace('w', validate)
-let_var_14 = tk.StringVar()
-let_var_14.trace('w', validate)
-
-let_var_15 = tk.StringVar()
-let_var_15.trace('w', validate)
-let_var_16 = tk.StringVar()
-let_var_16.trace('w', validate)
-let_var_17 = tk.StringVar()
-let_var_17.trace('w', validate)
-let_var_18 = tk.StringVar()
-let_var_18.trace('w', validate)
-let_var_19 = tk.StringVar()
-let_var_19.trace('w', validate)
-
-let_var_20 = tk.StringVar()
-let_var_20.trace('w', validate)
-let_var_21 = tk.StringVar()
-let_var_21.trace('w', validate)
-let_var_22 = tk.StringVar()
-let_var_22.trace('w', validate)
-let_var_23 = tk.StringVar()
-let_var_23.trace('w', validate)
-let_var_24 = tk.StringVar()
-let_var_24.trace('w', validate)
-
 # create 5 entries
 entry_1 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var, justify=tk.CENTER)
 entry_1.grid(row=0, column=0, padx=8, pady=5)
@@ -203,62 +194,6 @@ entry_4 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_v
 entry_4.grid(row=0, column=3, padx=8, pady=5)
 entry_5 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_4, justify=tk.CENTER)
 entry_5.grid(row=0, column=4, padx=8, pady=5)
-
-# create next row
-entry_1 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_5, justify=tk.CENTER)
-entry_1.grid(row=1, column=0, padx=8, pady=5)
-entry_2 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_6, justify=tk.CENTER)
-entry_2.grid(row=1, column=1, padx=8, pady=5)
-entry_3 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_7, justify=tk.CENTER)
-entry_3.grid(row=1, column=2, padx=8, pady=5)
-entry_4 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_8, justify=tk.CENTER)
-entry_4.grid(row=1, column=3, padx=8, pady=5)
-entry_5 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_9, justify=tk.CENTER)
-entry_5.grid(row=1, column=4, padx=8, pady=5)
-
-# create next row
-entry_1 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_10, justify=tk.CENTER)
-entry_1.grid(row=2, column=0, padx=8, pady=5)
-entry_2 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_11, justify=tk.CENTER)
-entry_2.grid(row=2, column=1, padx=8, pady=5)
-entry_3 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_12, justify=tk.CENTER)
-entry_3.grid(row=2, column=2, padx=8, pady=5)
-entry_4 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_13, justify=tk.CENTER)
-entry_4.grid(row=2, column=3, padx=8, pady=5)
-entry_5 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_14, justify=tk.CENTER)
-entry_5.grid(row=2, column=4, padx=8, pady=5)
-
-# create next row
-entry_1 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_15, justify=tk.CENTER)
-entry_1.grid(row=3, column=0, padx=8, pady=5)
-entry_2 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_16, justify=tk.CENTER)
-entry_2.grid(row=3, column=1, padx=8, pady=5)
-entry_3 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_17, justify=tk.CENTER)
-entry_3.grid(row=3, column=2, padx=8, pady=5)
-entry_4 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_18, justify=tk.CENTER)
-entry_4.grid(row=3, column=3, padx=8, pady=5)
-entry_5 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_19, justify=tk.CENTER)
-entry_5.grid(row=3, column=4, padx=8, pady=5)
-
-# create next row
-entry_1 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_20, justify=tk.CENTER)
-entry_1.grid(row=4, column=0, padx=8, pady=5)
-entry_2 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_21, justify=tk.CENTER)
-entry_2.grid(row=4, column=1, padx=8, pady=5)
-entry_3 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_22, justify=tk.CENTER)
-entry_3.grid(row=4, column=2, padx=8, pady=5)
-entry_4 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_23, justify=tk.CENTER)
-entry_4.grid(row=4, column=3, padx=8, pady=5)
-entry_5 = tk.Entry(game_frame, font=("Century", 40), width=2, textvariable=let_var_24, justify=tk.CENTER)
-entry_5.grid(row=4, column=4, padx=8, pady=5)
-
-
-
-
-
-
-
-
 
 
 root.mainloop()
